@@ -17,10 +17,6 @@ A full-stack web application built with **PHP** and **MySQL** to support student
 - Students can chat with the AI for guidance, stress management tips, and academic advice
 - PHP backend sends prompts to the Ollama REST API and streams responses back to the frontend
 
-### 📚 Research Paper Search
-- Search tool for finding academic resources and research papers
-- Query-based search with results rendered dynamically
-
 ### 🛠️ Admin Dashboard
 - Separate admin login with role-based access control
 - View and manage registered students
