@@ -1,0 +1,18 @@
+DirectoryIndex index.php
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /student-portal/
+</IfModule>
+
+# Deny access to config files
+<Files "config.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Enable CORS
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization"

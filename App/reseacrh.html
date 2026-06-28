@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Papers - Student Wellbeing Portal</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ==========================================================================
+           CSS STYLES (Matching your Student Wellbeing Portal theme)
+           ========================================================================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            margin: 0;
+            padding: 30px 20px;
+        }
+
+        .portal-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-section h2 {
+            color: #1e293b;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header-section p {
+            color: #64748b;
+            font-size: 1.05rem;
+            margin-top: 0;
+        }
+
+        .filter-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            margin-bottom: 35px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .filter-box h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            color: #0f172a;
+            margin-bottom: 15px;
+        }
+
+        .search-wrapper {
+            display: flex;
+            gap: 12px;
+        }
+
+        .search-wrapper input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 1px solid #cbd5e1;
+            border-radius: 30px; 
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-wrapper input:focus {
+            border-color: #5243e1;
+        }
+
+        .btn-search {
+            background-color: #5243e1;
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        .btn-search:hover {
+            background-color: #4032c9;
+        }
+
+        .results-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        .paper-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .paper-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+        }
+
+        .paper-card h4 {
+            margin: 14px 0 8px 0;
+            color: #1e293b;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .authors {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .badge {
+            align-self: flex-start;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-ieee {
+            background-color: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .badge-locked {
+            background-color: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 14px;
+        }
+
+        .views {
+            font-size: 0.85rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-download {
+            background-color: #5243e1;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-request {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-request:hover {
+            background-color: #dc2626;
+        }
+
+        /* Modal Overlay Custom Structure */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        #paperRequestForm {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        #paperRequestForm label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        #paperRequestForm input, #paperRequestForm textarea {
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        #paperRequestForm input[readonly] {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+
+        .btn-submit-request {
+            background-color: #5243e1;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-container">
+        
+        <div class="header-section">
+            <h2>Information Articles & Research Papers</h2>
+            <p>Explore our library. If a research paper is locked or unavailable on IEEE, use the action system to submit a processing request.</p>
+        </div>
+
+        <div class="filter-box">
+            <h3>Filter & Search Research Papers:</h3>
+            <div class="search-wrapper">
+                <input type="text" id="paperSearch" onkeyup="searchPapers()" placeholder="Search by paper title, authors, or topics...">
+                <button onclick="searchPapers()" class="btn-search">Search</button>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            
+            <div class="paper-card">
+                <div>
+                    <span class="badge badge-ieee">Artificial Intelligence</span>
+                    <h4>A Review of Machine Learning Algorithms for Predictive Student Analytics</h4>
+                    <p class="authors">By: Dr. Sarah Jenkins • IEEE Xplore 2025</p>
+                </div>
+                <div class="card-footer">
+                    <span class="views"><i class="fa-regular fa-eye"></i> 12 views</span>
+                    <a href="data:application/pdf;base64,JVBERi0xLjQKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3hbMCAwIDU5NSA4NDJdCi9Db250ZW50cyA0IDAgUgo+PgplbmRvYmoKNCAwIG9iago8PAovTGVuZ3RoIDU5Cj4+CnN0cmVhbQpCVAovRjEgMTIgVGYKMTAwIDcwMCBUZAooRGVtb25zdHJhdGlvbiBSZXNlYXJjaCBQYXBlciBQREYpIFRqCkVOCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDUKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbCAKMDAwMDAwMDExMSAwMDAwMCBuIAowMDAwMDAwMjEyIDAwMDAwIG4gCnRyYWlsZXIKPDwKL1NpemUgNQovUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKMzIwCiUlRU9G" download="Predictive_Student_Analytics.pdf" class="btn-download">
+                        <i class="fa-solid fa-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div>
+                    <span class="badge badge-locked">Data Science</span>
+                    <h4>Advanced Data Engineering and Optimization Strategies in Master's Programs</h4>
+                    <p class="authors">By: Prof. Albus R. • Premium Institutional Access</p>
+                </div>
+                <div class="card-footer">
+                    <span class="views"><i class="fa-regular fa-eye"></i> 48 views</span>
+                    <button class="btn-request" onclick="openRequestModal('Advanced Data Engineering and Optimization Strategies in Master\'s Programs')">
+                        <i class="fa-solid fa-file-circle-exclamation"></i> Request Paper
+                    </button>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div>
+                    <span class="badge badge-ieee">Mental Health</span>
+                    <h4>Mitigating Cognitive Fatigue and Stress for Post-Graduate Students</h4>
+                    <p class="authors">By: Emily Watson • Open Access 2026</p>
+                </div>
+                <div class="card-footer">
+                    <span class="views"><i class="fa-regular fa-eye"></i> 5 views</span>
+                    <a href="data:application/pdf;base64,JVBERi0xLjQKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3hbMCAwIDU5NSA4NDJdCi9Db250ZW50cyA0IDAgUgo+PgplbmRvYmoKNCAwIG9iago8PAovTGVuZ3RoIDU5Cj4+CnN0cmVhbQpCVAovRjEgMTIgVGYKMTAwIDcwMCBUZAooRGVtb25zdHJhdGlvbiBSZXNlYXJjaCBQYXBlciBQREYpIFRqCkVOCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDUKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbCAKMDAwMDAwMDExMSAwMDAwMCBuIAowMDAwMDAwMjEyIDAwMDAwIG4gCnRyYWlsZXIKPDwKL1NpemUgNQovUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKMzIwCiUlRU9G" download="Mitigating_Cognitive_Fatigue.pdf" class="btn-download">
+                        <i class="fa-solid fa-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div>
+                    <span class="badge badge-ieee">Machine Learning</span>
+                    <h4>Neural Network Architecture Optimization Models for Classification Systems</h4>
+                    <p class="authors">By: Keith Vance, L. Zhang • IEEE Xplore 2025</p>
+                </div>
+                <div class="card-footer">
+                    <span class="views"><i class="fa-regular fa-eye"></i> 19 views</span>
+                    <a href="data:application/pdf;base64,JVBERi0xLjQKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3hbMCAwIDU5NSA4NDJdCi9Db250ZW50cyA0IDAgUgo+PgplbmRvYmoKNCAwIG9iago8PAovTGVuZ3RoIDU5Cj4+CnN0cmVhbQpCVAovRjEgMTIgVGYKMTAwIDcwMCBUZAooRGVtb25zdHJhdGlvbiBSZXNlYXJjaCBQYXBlciBQREYpIFRqCkVOCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDUKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbCAKMDAwMDAwMDExMSAwMDAwMCBuIAowMDAwMDAwMjEyIDAwMDAwIG4gCnRyYWlsZXIKPDwKL1NpemUgNQovUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKMzIwCiUlRU9G" download="Neural_Network_Optimization.pdf" class="btn-download">
+                        <i class="fa-solid fa-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div>
+                    <span class="badge badge-locked">Academic Success</span>
+                    <h4>A Comparative Analysis of High-Performance Coding Frameworks in Engineering</h4>
+                    <p class="authors">By: Marcus Thorne • Closed Journal Publication</p>
+                </div>
+                <div class="card-footer">
+                    <span class="views"><i class="fa-regular fa-eye"></i> 89 views</span>
+                    <button class="btn-request" onclick="openRequestModal('A Comparative Analysis of High-Performance Coding Frameworks in Engineering')">
+                        <i class="fa-solid fa-file-circle-exclamation"></i> Request Paper
+                    </button>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div>
+                    <span class="badge badge-ieee">Web Development</span>
+                    <h4>Scalability Architectures for Responsive Higher-Education Academic Portals</h4>
+                    <p class="authors">By: Clara Smith • Open Access Source</p>
+                </div>
+                <div class="card-footer">
+                    <span class="views"><i class="fa-regular fa-eye"></i> 31 views</span>
+                    <a href="data:application/pdf;base64,JVBERi0xLjQKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3hbMCAwIDU5NSA4NDJdCi9Db250ZW50cyA0IDAgUgo+PgplbmRvYmoKNCAwIG9iago8PAovTGVuZ3RoIDU5Cj4+CnN0cmVhbQpCVAovRjEgMTIgVGYKMTAwIDcwMCBUZAooRGVtb25zdHJhdGlvbiBSZXNlYXJjaCBQYXBlciBQREYpIFRqCkVOCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDUKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbCAKMDAwMDAwMDExMSAwMDAwMCBuIAowMDAwMDAwMjEyIDAwMDAwIG4gCnRyYWlsZXIKPDwKL1NpemUgNQovUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKMzIwCiUlRU9G" download="Scalability_Architectures.pdf" class="btn-download">
+                        <i class="fa-solid fa-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div>
+                    <span class="badge badge-locked">Social Skills</span>
+                    <h4>Group Dynamics and Collaborative Engineering Project Success Metrics</h4>
+                    <p class="authors">By: T. Peterson, H. Vance • Restricted Publisher Access</p>
+                </div>
+                <div class="card-footer">
+                    <span class="views"><i class="fa-regular fa-eye"></i> 14 views</span>
+                    <button class="btn-request" onclick="openRequestModal('Group Dynamics and Collaborative Engineering Project Success Metrics')">
+                        <i class="fa-solid fa-file-circle-exclamation"></i> Request Paper
+                    </button>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div>
+                    <span class="badge badge-ieee">Physical Wellness</span>
+                    <h4>The Link Between Posture Engineering and Extended Programming Lab Sessions</h4>
+                    <p class="authors">By: Dr. Arthur Pendelton • Health Tech Journal 2026</p>
+                </div>
+                <div class="card-footer">
+                    <span class="views"><i class="fa-regular fa-eye"></i> 72 views</span>
+                    <a href="data:application/pdf;base64,JVBERi0xLjQKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3hbMCAwIDU5NSA4NDJdCi9Db250ZW50cyA0IDAgUgo+PgplbmRvYmoKNCAwIG9iago8PAovTGVuZ3RoIDU5Cj4+CnN0cmVhbQpCVAovRjEgMTIgVGYKMTAwIDcwMCBUZAooRGVtb25zdHJhdGlvbiBSZXNlYXJjaCBQYXBlciBQREYpIFRqCkVOCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDUKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbCAKMDAwMDAwMDExMSAwMDAwMCBuIAowMDAwMDAwMjEyIDAwMDAwIG4gCnRyYWlsZXIKPDwKL1NpemUgNQovUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKMzIwCiUlRU9G" download="Posture_And_Programming.pdf" class="btn-download">
+                        <i class="fa-solid fa-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+
+            <div class="paper-card">
+                <div>
+                    <span class="badge badge-locked">Career Development</span>
+                    <h4>Industry Placement Conversion Rates for Post-Graduate Computing Careers</h4>
+                    <p class="authors">By: S. Martinez • Corporate Access Firewall</p>
+                </div>
+                <div class="card-footer">
+                    <span class="views"><i class="fa-regular fa-eye"></i> 110 views</span>
+                    <button class="btn-request" onclick="openRequestModal('Industry Placement Conversion Rates for Post-Graduate Computing Careers')">
+                        <i class="fa-solid fa-file-circle-exclamation"></i> Request Paper
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="requestModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <h3>Request Locked Resource</h3>
+                <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 15px;">
+                    Our university library administration will attempt to acquire this paper for you through internal networks.
+                </p>
+                
+                <form id="paperRequestForm" onsubmit="handleRequestSubmit(event)">
+                    <label for="modalPaperTitle">Selected Document Title</label>
+                    <input type="text" id="modalPaperTitle" required readonly>
+
+                    <label for="studentNotes">Additional details (Optional context)</label>
+                    <textarea id="studentNotes" rows="3" placeholder="Provide link, DOI, or alternate variants if known..."></textarea>
+
+                    <button type="submit" class="btn-submit-request">Submit Institutional Request</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Real-time keyword filter algorithm
+        function searchPapers() {
+            let input = document.getElementById('paperSearch').value.toLowerCase();
+            let cards = document.getElementsByClassName('paper-card');
+            
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].getElementsByTagName('h4')[0].innerText.toLowerCase();
+                let authors = cards[i].getElementsByClassName('authors')[0].innerText.toLowerCase();
+                
+                if (title.includes(input) || authors.includes(input)) {
+                    cards[i].style.display = "flex";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        function openRequestModal(paperTitle) {
+            document.getElementById('modalPaperTitle').value = paperTitle;
+            document.getElementById('requestModal').style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById('requestModal').style.display = "none";
+        }
+
+        function handleRequestSubmit(event) {
+            event.preventDefault();
+            const title = document.getElementById('modalPaperTitle').value;
+            
+            alert(`Your request for:\n"${title}"\nhas been logged successfully! The library admin team will contact you.`);
+            
+            document.getElementById('studentNotes').value = '';
+            closeModal();
+        }
+
+        window.onclick = function(event) {
+            let modal = document.getElementById('requestModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

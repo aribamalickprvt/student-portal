@@ -1,0 +1,24 @@
+ # Enable Rewrite Engine
+RewriteEngine On
+RewriteBase /student-portal/api/
+
+# Handle OPTIONS requests for CORS
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# API Version 1 Routes
+RewriteRule ^v1/auth/?$ v1/auth.php [L]
+RewriteRule ^v1/articles/?$ v1/articles.php [L]
+RewriteRule ^v1/articles/([0-9]+)/?$ v1/articles.php?id=$1 [L]
+RewriteRule ^v1/tips/?$ v1/tips.php [L]
+RewriteRule ^v1/tips/([0-9]+)/?$ v1/tips.php?id=$1 [L]
+RewriteRule ^v1/categories/?$ v1/categories.php [L]
+RewriteRule ^v1/categories/([0-9]+)/?$ v1/categories.php?id=$1 [L]
+RewriteRule ^v1/feedback/?$ v1/feedback.php [L]
+RewriteRule ^v1/chatbot/?$ v1/chatbot_api.php [L]
+
+# Deny access to config files
+<Files "config.php">
+    Order allow,deny
+    Deny from all
+</Files>
