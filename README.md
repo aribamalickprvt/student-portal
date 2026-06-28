@@ -34,7 +34,7 @@ A full-stack web application built with **PHP** and **MySQL** to support student
 | Layer | Technology |
 |-------|-----------|
 | Frontend | HTML, CSS, JavaScript |
-| Backend | PHP (procedural / OOP) |
+| Backend | PHP (procedural) |
 | Database | MySQL |
 | AI Integration | Ollama (local LLM API) |
 | Auth | PHP Sessions (`$_SESSION`) |
